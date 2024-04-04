@@ -3,11 +3,9 @@ package main
 import (
 	c "PBP-API/src/controllers"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/go-co-op/gocron"
-	"gopkg.in/gomail.v2"
 )
 
 func main() {
@@ -34,20 +32,7 @@ func main() {
 
 	s.StartBlocking()
 
-	select {}
-
-	m := gomail.NewMessage()
-	m.SetHeader("From", "jasonjeyys@gmail.com")
-	m.SetHeader("To", "elliezerchristian@gmail.com")
-	m.SetHeader("Subject", "Hello, Golang Email!")
-	m.SetBody("text/plain", "This is the body of the email.")
-
-	d := gomail.NewDialer("smtp.gmail.com", 587, "jasonjeyys@gmail.com", "testingemail")
-
-	if err := d.DialAndSend(m); err != nil {
-		log.Fatal(err)
-	}
 	//go routine
-	c.TaskScheduler();
+	c.TaskScheduler()
 	select {}
 }

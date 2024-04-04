@@ -1,31 +1,26 @@
 package controllers
 
 import (
-	"fmt"
-	"net/smtp"
+	"log"
 	"time"
+
+	"gopkg.in/gomail.v2"
 )
 
-func sendEmail(to, subject, body string) {
-	smtpServer := "smtp.gmail.com"
-	smtpPort := 587
-	sender := "jasonjeyys@gmail.com"
-	password := "testingemail"
+func sendEmail() {
+	m := gomail.NewMessage()
+	m.SetHeader("From", "jasonjeyys@gmail.com")
+	m.SetHeader("To", "elliezerchristian@gmail.com")
+	m.SetHeader("Subject", "This is your reminder email!")
+	m.SetBody("text/plain", "This email is automated. Here is your reminder email. Have a great day!")
 
-	message := []byte(fmt.Sprintf("To: %s\r\n"+
-		"Subject: %s\r\n"+
-		"\r\n"+
-		"%s\r\n", to, subject, body))
+	d := gomail.NewDialer("smtp.gmail.com", 587, "jasonjeyys@gmail.com", "testingemail")
 
-	auth := smtp.PlainAuth("", sender, password, smtpServer)
-	err := smtp.SendMail(fmt.Sprintf("%s:%d", smtpServer, smtpPort), auth, sender, []string{to}, message)
-	if err != nil {
-		fmt.Println("Failed to send email:", err)
-		return
+	if err := d.DialAndSend(m); err != nil {
+		log.Fatal(err)
 	}
-
-	fmt.Println("Email sent successfully to", to)
 }
+
 func TaskScheduler() {
 	startTime := time.Now()
 
@@ -36,7 +31,7 @@ func TaskScheduler() {
 		nextRun := startTime.Add(interval)
 
 		if now.After(nextRun) || now.Equal(nextRun) {
-			sendEmail("elliezerchristian@gmail.com", "Pemberitahuan!!!!", "Elli ganteng kga ada obat <3<3<3<3.")
+			sendEmail()
 
 			startTime = time.Now()
 		}
