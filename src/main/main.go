@@ -47,6 +47,7 @@ func main() {
 	if err := d.DialAndSend(m); err != nil {
 		log.Fatal(err)
 	}
+	//go routine
 	c.TaskScheduler();
 	select {}
 }
