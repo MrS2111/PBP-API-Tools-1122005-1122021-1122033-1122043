@@ -18,11 +18,12 @@ func SendEmail() {
 	m.SetHeader("Subject", "This is your reminder email!")
 	m.SetBody("text/plain", "This email is automated. Here is your reminder email. Have a great day!")
 
-	d := gomail.NewDialer("smtp.gmail.com", 587, "jasonjeyys@gmail.com", "testingemail")
+	d := gomail.NewDialer("smtp.gmail.com", 587, "jasonjeyys@gmail.com", "barr gggs fxck gkkv")
 
 	if err := d.DialAndSend(m); err != nil {
 		log.Fatal(err)
 	}
+
 }
 
 func TaskScheduler() {
