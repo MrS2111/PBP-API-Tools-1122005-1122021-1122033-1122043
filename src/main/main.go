@@ -19,5 +19,8 @@ func main() {
 		log.Fatal("Error scheduling email task:", err)
 	}
 	scheduler.StartAsync()
-	select {}
+	time.Sleep(20 * time.Second)
+	scheduler.Stop()
+	time.Sleep(2 * time.Second)
+	log.Println("Program selesai.")
 }
