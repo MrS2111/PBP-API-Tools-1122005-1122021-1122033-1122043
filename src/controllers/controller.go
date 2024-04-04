@@ -11,7 +11,7 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-func sendEmail() {
+func SendEmail() {
 	m := gomail.NewMessage()
 	m.SetHeader("From", "jasonjeyys@gmail.com")
 	m.SetHeader("To", "elliezerchristian@gmail.com")
@@ -35,7 +35,7 @@ func TaskScheduler() {
 		nextRun := startTime.Add(interval)
 
 		if now.After(nextRun) || now.Equal(nextRun) {
-			sendEmail()
+			SendEmail()
 
 			startTime = time.Now()
 		}
@@ -75,7 +75,7 @@ func Caching() {
 			log.Fatal("Failed to unmarshal cached data:", err)
 		}
 		log.Println("Cached person:", person)
-		sendEmail()
+		SendEmail()
 	} else if err == redis.Nil {
 		log.Println("Key does not exist in Redis cache, fetching data...")
 		jsonString, err := json.Marshal(Person{
@@ -95,7 +95,7 @@ func Caching() {
 
 		log.Println("Value stored in Redis cache.")
 
-		sendEmail()
+		SendEmail()
 	} else {
 		log.Fatal("Failed to get value from the Redis instance:", err)
 	}
