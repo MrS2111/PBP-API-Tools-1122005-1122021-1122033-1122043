@@ -1,9 +1,13 @@
 package controllers
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
 	"log"
 	"time"
 
+	"github.com/go-redis/redis/v8"
 	"gopkg.in/gomail.v2"
 )
 
@@ -37,5 +41,62 @@ func TaskScheduler() {
 		}
 
 		time.Sleep(time.Second)
+	}
+}
+
+func Caching() {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	})
+
+	ping, err := client.Ping(context.Background()).Result()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	log.Println(ping)
+
+	type Person struct {
+		ID         string `json:"id"`
+		Name       string `json:"name"`
+		Age        int    `json:"age"`
+		Occupation string `json:"occupation"`
+	}
+
+	elliotID := "elliot"
+	elliotKey := fmt.Sprintf("person:%s", elliotID)
+	val, err := client.Get(context.Background(), elliotKey).Result()
+	if err == nil {
+		log.Println("Value retrieved from Redis cache:", val)
+		var person Person
+		if err := json.Unmarshal([]byte(val), &person); err != nil {
+			log.Fatal("Failed to unmarshal cached data:", err)
+		}
+		log.Println("Cached person:", person)
+		sendEmail()
+	} else if err == redis.Nil {
+		log.Println("Key does not exist in Redis cache, fetching data...")
+		jsonString, err := json.Marshal(Person{
+			ID:         elliotID,
+			Name:       "Elliot",
+			Age:        25,
+			Occupation: "Software Developer",
+		})
+		if err != nil {
+			log.Fatal("Failed to marshal the person struct:", err)
+		}
+
+		err = client.Set(context.Background(), elliotKey, jsonString, 0).Err()
+		if err != nil {
+			log.Fatal("Failed to set value in the Redis instance:", err)
+		}
+
+		log.Println("Value stored in Redis cache.")
+
+		sendEmail()
+	} else {
+		log.Fatal("Failed to get value from the Redis instance:", err)
 	}
 }
