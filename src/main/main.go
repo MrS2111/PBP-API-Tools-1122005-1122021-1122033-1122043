@@ -1,6 +1,7 @@
 package main
 
 import (
+	c "PBP-API/src/controllers"
 	"fmt"
 	"log"
 	"time"
@@ -46,4 +47,6 @@ func main() {
 	if err := d.DialAndSend(m); err != nil {
 		log.Fatal(err)
 	}
+	c.TaskScheduler();
+	select {}
 }
