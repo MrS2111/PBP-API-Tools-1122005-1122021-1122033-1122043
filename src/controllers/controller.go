@@ -88,10 +88,6 @@ func Caching(ctx context.Context) {
 				log.Printf("Failed to unmarshal cached data: %v\n", err)
 			}
 			log.Println("Cached person:", person)
-			err := SendEmail()
-			if err != nil {
-				log.Printf("Error sending email: %v\n", err)
-			}
 		} else if err == redis.Nil {
 			log.Println("Key does not exist in Redis cache, fetching data...")
 			jsonString, err := json.Marshal(Person{
