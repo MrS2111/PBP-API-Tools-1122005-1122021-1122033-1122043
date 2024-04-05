@@ -14,7 +14,7 @@ import (
 func SendEmail() error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", "jasonjeyys@gmail.com")
-	m.SetHeader("To", "if-22043@students.ithb.ac.id")
+	m.SetHeader("To", "if-220@students.ithb.ac.id")
 	m.SetHeader("Subject", "This is your reminder email!")
 	m.SetBody("text/plain", "This email is automated. Here is your reminder email. Have a great day!")
 
@@ -112,10 +112,6 @@ func Caching(ctx context.Context) {
 			}
 
 			log.Println("Value stored in Redis cache.")
-			err = SendEmail()
-			if err != nil {
-				log.Printf("Error sending email: %v\n", err)
-			}
 		} else {
 			log.Printf("Failed to get value from the Redis instance: %v\n", err)
 		}
